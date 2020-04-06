@@ -150,6 +150,7 @@ source $APWD/distros/$DISTRO/install_webstats.sh
 source $APWD/distros/$DISTRO/install_jailkit.sh
 source $APWD/distros/$DISTRO/install_fail2ban.sh
 source $APWD/distros/$DISTRO/install_webmail.sh
+source $APWD/distros/$DISTRO/install_magenio_utilities.sh
 source $APWD/distros/$DISTRO/install_ispconfig.sh
 source $APWD/distros/$DISTRO/install_fix.sh
 
@@ -301,6 +302,7 @@ if [ -f /etc/debian_version ]; then
 	fi
 	InstallWebStats
 	InstallFail2ban
+	InstallMagenio
 	if [ "$CFG_ISPCVERSION" == "Beta" ]; then
 		source $APWD/distros/$DISTRO/install_ispconfigbeta.sh
 		InstallISPConfigBeta

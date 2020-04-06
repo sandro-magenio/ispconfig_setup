@@ -14,6 +14,33 @@ InstallSQLServer() {
     service mysql restart
     echo -e "[${green}DONE${NC}]\n"
   
+  elif [ "$CFG_SQLSERVER" == "Percona" ]; then
+   echo -n "Installing GnuPG..."
+   	apt_install gnupg2
+   echo -n "Downloading Percona apt and enable it... "
+	wget https://repo.percona.com/apt/percona-release_latest.$(lsb_release -sc)_all.deb
+	dpkg -i percona-release_latest.$(lsb_release -sc)_all.deb
+	percona-release setup ps57
+	apt-get update 
+	
+   echo -n "Installing Database server (Percona)... "
+   	echo "percona-server-server-5.7 percona-server-server-5.7/root-pass password $CFG_MYSQL_ROOT_PWD" | debconf-set-selections
+   	echo "percona-server-server-5.7 percona-server-server-5.7/re-root-pass password $CFG_MYSQL_ROOT_PWD" | debconf-set-selections
+   	apt_install percona-server-server-5.7
+    echo -e "[${green}DONE${NC}]\n"
+    echo "lets configure percona."
+
+	mysql --defaults-file/etc/mysql/debian.cnf <<EOF
+	CREATE FUNCTION fnv1a_64 RETURNS INTEGER SONAME 'libfnv1a_udf.so';
+	CREATE FUNCTION fnv_64 RETURNS INTEGER SONAME 'libfnv_udf.so';
+	CREATE FUNCTION murmur_hash RETURNS INTEGER SONAME 'libmurmur_udf.so';
+	EOF
+    echo -n "Restarting Percon MySQL Server... "
+    service mysql restart
+    echo -e "[${green}DONE${NC}]\n"
+  fi	
+
+  
   elif [ "$CFG_SQLSERVER" == "MariaDB" ]; then
   
    echo -n "Installing Database server (MariaDB)... "
